@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white: #ffffff;
+  --gray-50: #f9f9f8;
+  --gray-100: #f2f2f0;
+  --gray-200: #e5e5e2;
+  --gray-300: #d0d0cc;
+  --gray-400: #a0a09a;
+  --gray-500: #737370;
+  --gray-600: #4a4a46;
+  --gray-900: #1a1a18;
+  --accent: #1a1a18;
+  --accent-hover: #2d2d2a;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --green-border: #bbf7d0;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --red-border: #fecaca;
+  --amber: #d97706;
+  --amber-light: #fffbeb;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: 'Geist', -apple-system, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-900);
+  -webkit-font-smoothing: antialiased;
+}
+
+.serif { font-family: 'Instrument Serif', Georgia, serif; }
+
+/* AUTH */
+.auth-bg {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-left {
+  background: var(--gray-900);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-left-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.02) 0%, transparent 50%);
+}
+
+.auth-left-logo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-left-logo-mark {
+  width: 32px; height: 32px;
+  background: white;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.auth-left-logo-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  letter-spacing: -0.3px;
+}
+
+.auth-left-quote {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-left-quote-text {
+  font-family: 'Instrument Serif', serif;
+  font-size: 32px;
+  color: white;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+}
+
+.auth-left-quote-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+}
+
+.auth-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: white;
+}
+
+.auth-form-wrap {
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-heading {
+  font-family: 'Instrument Serif', serif;
+  font-size: 30px;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+  color: var(--gray-900);
+}
+
+.auth-sub {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-bottom: 32px;
+}
+
+.field { margin-bottom: 16px; }
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-600);
+  margin-bottom: 7px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: 'Geist', sans-serif;
+  color: var(--gray-900);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field-input:focus { border-color: var(--gray-400); }
+.field-input::placeholder { color: var(--gray-300); }
+
+.field-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: 'Geist', sans-serif;
+  color: var(--gray-900);
+  background: white;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23737370' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  transition: border-color 0.15s;
+}
+
+.field-select:focus { border-color: var(--gray-400); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px 20px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Geist', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.btn-dark {
+  background: var(--gray-900);
+  color: white;
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.btn-dark:hover { background: var(--accent-hover); }
+.btn-dark:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-outline {
+  background: white;
+  color: var(--gray-600);
+  border: 1.5px solid var(--gray-200);
+}
+
+.btn-outline:hover { background: var(--gray-50); border-color: var(--gray-300); }
+
+.btn-ghost {
+  background: none;
+  color: var(--gray-500);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.btn-ghost:hover { color: var(--gray-900); background: var(--gray-100); }
+
+.auth-toggle {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--gray-400);
+}
+
+.auth-toggle button {
+  background: none;
+  border: none;
+  color: var(--gray-900);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Geist', sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-error { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+.alert-success { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+
+/* APP LAYOUT */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--gray-50);
+}
+
+.sidebar {
+  width: 220px;
+  background: white;
+  border-right: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 12px;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 10px;
+  margin-bottom: 32px;
+}
+
+.sidebar-logo-mark {
+  width: 28px; height: 28px;
+  background: var(--gray-900);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+
+.sidebar-logo-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+  letter-spacing: -0.3px;
+}
+
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-300);
+  padding: 0 10px;
+  margin-bottom: 6px;
+  margin-top: 8px;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  font-size: 13.5px;
+  font-family: 'Geist', sans-serif;
+  font-weight: 400;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: left;
+  margin-bottom: 1px;
+}
+
+.nav-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+
+.nav-btn.active {
+  background: var(--gray-100);
+  color: var(--gray-900);
+  font-weight: 500;
+}
+
+.nav-icon {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  background: var(--gray-100);
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+
+.nav-btn.active .nav-icon { background: var(--gray-900); }
+.nav-btn.active .nav-icon-img { filter: invert(1); }
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid var(--gray-100);
+  padding-top: 16px;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.user-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--gray-900);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.user-name { font-size: 13px; font-weight: 500; color: var(--gray-900); }
+.user-email { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-family: 'Geist', sans-serif;
+  color: var(--gray-400);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.logout-btn:hover { background: var(--red-light); color: var(--red); }
+
+/* MAIN */
+.main-content {
+  margin-left: 220px;
+  flex: 1;
+  padding: 40px 48px;
+  max-width: calc(100vw - 220px);
+}
+
+.page-header {
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+  color: var(--gray-900);
+  line-height: 1.2;
+}
+
+.page-sub {
+  font-size: 14px;
+  color: var(--gray-400);
+  margin-top: 5px;
+}
+
+/* STATS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+}
+
+.stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--gray-400);
+}
+
+.stat-icon-wrap {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+
+.stat-value {
+  font-family: 'Instrument Serif', serif;
+  font-size: 36px;
+  letter-spacing: -1px;
+  color: var(--gray-900);
+  line-height: 1;
+}
+
+.stat-footer {
+  font-size: 12px;
+  color: var(--gray-400);
+  margin-top: 6px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.card-body { padding: 24px; }
+
+/* FORM GRID */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* WORKOUT LIST */
+.workout-list { display: flex; flex-direction: column; }
+
+.workout-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background 0.1s;
+}
+
+.workout-row:last-child { border-bottom: none; }
+.workout-row:hover { background: var(--gray-50); }
+
+.workout-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--gray-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.workout-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-900);
+  margin-bottom: 2px;
+}
+
+.workout-meta {
+  font-size: 12px;
+  color: var(--gray-400);
+}
+
+.workout-right { margin-left: auto; text-align: right; }
+
+.workout-cal {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  color: var(--gray-900);
+  letter-spacing: -0.3px;
+}
+
+.workout-cal-label { font-size: 11px; color: var(--gray-400); }
+
+.date-badge {
+  display: inline-flex;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--gray-100);
+  font-size: 11px;
+  color: var(--gray-500);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* CALORIE SUCCESS PANEL */
+.calorie-panel {
+  background: var(--gray-900);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.calorie-panel-left { flex: 1; }
+
+.calorie-panel-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 6px;
+}
+
+.calorie-panel-value {
+  font-family: 'Instrument Serif', serif;
+  font-size: 52px;
+  color: white;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.calorie-panel-unit {
+  font-size: 18px;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Geist', sans-serif;
+  font-weight: 300;
+  margin-left: 4px;
+}
+
+.calorie-panel-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 8px;
+}
+
+.calorie-panel-icon {
+  font-size: 48px;
+  opacity: 0.8;
+}
+
+/* BAR CHART */
+.bar-chart { display: flex; flex-direction: column; gap: 10px; }
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 60px;
+  align-items: center;
+  gap: 14px;
+}
+
+.bar-label {
+  font-size: 12px;
+  color: var(--gray-400);
+  text-align: right;
+}
+
+.bar-track {
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--gray-900);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.bar-val {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray-600);
+  text-align: right;
+}
+
+/* EMPTY */
+.empty {
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.empty-emoji { font-size: 40px; margin-bottom: 14px; }
+
+.empty-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+
+.empty-sub {
+  font-size: 13px;
+  color: var(--gray-400);
+}
+
+/* LOADING */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 10px;
+  color: var(--gray-400);
+  font-size: 13px;
+}
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--gray-200);
+  border-top-color: var(--gray-900);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* BADGE */
+.badge {
+  display: inline-flex;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-gray { background: var(--gray-100); color: var(--gray-500); }
+
+/* TOAST */
+.toast-wrap {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--gray-900);
+  color: white;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.2s ease;
+  max-width: 300px;
+}
+
+@keyframes toastIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .auth-bg { grid-template-columns: 1fr; }
+  .auth-left { display: none; }
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; max-width: 100vw; padding: 20px; }
+  .stats-row { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+const API_BASE = 'http://localhost:8080';
+
+const WORKOUT_TYPES = ['Running','Cycling','Yoga','Swimming','Weightlifting','HIIT','Walking','Boxing','Pilates'];
+const EMOJI_MAP = { Running:'🏃', Cycling:'🚴', Yoga:'🧘', Swimming:'🏊', Weightlifting:'🏋️', HIIT:'⚡', Walking:'🚶', Boxing:'🥊', Pilates:'🤸', Default:'💪' };
+const emoji = t => EMOJI_MAP[t] || EMOJI_MAP.Default;
+
+const apiFetch = async (method, path, body) => {
+  const res = await fetch(API_BASE + path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t || 'Request failed'); }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+};
+
+const formatDate = (d) => {
+  if (!d) return '';
+  const date = new Date(d);
+  const today = new Date();
+  const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+  if (date.toDateString() === today.toDateString()) return 'Today';
+  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+};
+
+const greeting = () => {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+};
+
+// ── TOAST ──
+function Toast({ toasts }) {
+  return (
+    <div className="toast-wrap">
+      {toasts.map(t => (
+        <div key={t.id} className="toast">
+          <span>{t.type === 'success' ? '✓' : '!'}</span>
+          {t.msg}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── AUTH ──
+function AuthPage({ onLogin }) {
+  const [mode, setMode] = useState('login');
+  const [form, setForm] = useState({ name:'', email:'', password:'' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setLoading(true); setError(''); setSuccess('');
+    try {
+      if (mode === 'register') {
+        await apiFetch('POST', '/users/register', { name: form.name, email: form.email, password: form.password });
+        setSuccess('Account created! Please log in.');
+        setMode('login');
+        setForm(f => ({ ...f, password: '' }));
+      } else {
+        const user = await apiFetch('POST', '/users/login', { email: form.email, password: form.password });
+        onLogin(user);
+      }
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div className="auth-bg">
+      <div className="auth-left">
+        <div className="auth-left-pattern" />
+        <div className="auth-left-logo">
+          <div className="auth-left-logo-mark">💪</div>
+          <span className="auth-left-logo-text">FitTrack</span>
+        </div>
+        <div className="auth-left-quote">
+          <div className="auth-left-quote-text">
+            Track every rep,<br />every step,<br />every calorie.
+          </div>
+          <div className="auth-left-quote-sub">Your personal fitness companion.</div>
+        </div>
+      </div>
+
+      <div className="auth-right">
+        <div className="auth-form-wrap">
+          <div className="auth-heading">{mode === 'login' ? 'Welcome back' : 'Create account'}</div>
+          <div className="auth-sub">{mode === 'login' ? 'Sign in to your account' : 'Start tracking your fitness today'}</div>
+
+          {error && <div className="alert alert-error">⚠ {error}</div>}
+          {success && <div className="alert alert-success">✓ {success}</div>}
+
+          <form onSubmit={handleSubmit}>
+            {mode === 'register' && (
+              <div className="field">
+                <label className="field-label">Full Name</label>
+                <input className="field-input" type="text" placeholder="Ayush Kumar" value={form.name} onChange={set('name')} required />
+              </div>
+            )}
+            <div className="field">
+              <label className="field-label">Email</label>
+              <input className="field-input" type="email" placeholder="you@example.com" value={form.email} onChange={set('email')} required />
+            </div>
+            <div className="field" style={{ marginBottom: 24 }}>
+              <label className="field-label">Password</label>
+              <input className="field-input" type="password" placeholder="••••••••" value={form.password} onChange={set('password')} required />
+            </div>
+            <button className="btn btn-dark" type="submit" disabled={loading}>
+              {loading ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
+            </button>
+          </form>
+
+          <div className="auth-toggle">
+            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            <button onClick={() => { setMode(m => m === 'login' ? 'register' : 'login'); setError(''); setSuccess(''); }}>
+              {mode === 'login' ? 'Sign up' : 'Sign in'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── SIDEBAR ──
+function Sidebar({ user, active, onNav, onLogout }) {
+  const items = [
+    { id: 'dashboard', icon: '⊞', label: 'Dashboard' },
+    { id: 'add',       icon: '+', label: 'Add Workout' },
+    { id: 'history',   icon: '≡', label: 'History' },
+    { id: 'calories',  icon: '◎', label: 'Calories' },
+  ];
+  return (
+    <div className="sidebar">
+      <div className="sidebar-logo">
+        <div className="sidebar-logo-mark">💪</div>
+        <span className="sidebar-logo-text">FitTrack</span>
+      </div>
+
+      <div className="sidebar-section-label">Navigation</div>
+      {items.map(item => (
+        <button key={item.id} className={`nav-btn ${active === item.id ? 'active' : ''}`} onClick={() => onNav(item.id)}>
+          <div className="nav-icon">
+            <span className="nav-icon-img">{item.icon}</span>
+          </div>
+          {item.label}
+        </button>
+      ))}
+
+      <div className="sidebar-bottom">
+        <div className="user-row">
+          <div className="user-avatar">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+          <div>
+            <div className="user-name">{user?.name}</div>
+            <div className="user-email">{user?.email}</div>
+          </div>
+        </div>
+        <button className="logout-btn" onClick={onLogout}>
+          ↩ Sign out
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── DASHBOARD ──
+function Dashboard({ user, workouts, totalCalories, todayCalories, onNav }) {
+  const recent = [...workouts].reverse().slice(0, 4);
+  return (
+    <>
+      <div className="page-header">
+        <div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 4 }}>{greeting()}</div>
+          <div className="page-title">{user?.name?.split(' ')[0] || 'Athlete'}</div>
+          <div className="page-sub">Here's your fitness overview</div>
+        </div>
+        <button className="btn btn-outline" onClick={() => onNav('add')} style={{ fontSize: 13, padding: '9px 16px' }}>
+          + Add workout
+        </button>
+      </div>
+
+      <div className="stats-row">
+        <StatCard label="Total Calories" value={totalCalories.toLocaleString()} icon="🔥" bg="#fff7ed" footer="All time" />
+        <StatCard label="Today's Calories" value={todayCalories.toLocaleString()} icon="⚡" bg="#f0fdf4" footer={new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'short' })} />
+        <StatCard label="Total Workouts" value={workouts.length} icon="🏆" bg="#f5f3ff" footer="Sessions logged" />
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <span className="card-title">Recent Activity</span>
+          <button className="btn-ghost btn" onClick={() => onNav('history')} style={{ fontSize: 12 }}>View all →</button>
+        </div>
+        {recent.length === 0 ? (
+          <div className="empty">
+            <div className="empty-emoji">🏃</div>
+            <div className="empty-title">No workouts yet</div>
+            <div className="empty-sub">Log your first workout to get started</div>
+          </div>
+        ) : (
+          <div className="workout-list">
+            {recent.map(w => <WorkoutRow key={w.id} workout={w} />)}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+function StatCard({ label, value, icon, bg, footer }) {
+  return (
+    <div className="stat-card">
+      <div className="stat-top">
+        <span className="stat-label">{label}</span>
+        <div className="stat-icon-wrap" style={{ background: bg }}>
+          <span style={{ fontSize: 15 }}>{icon}</span>
+        </div>
+      </div>
+      <div className="stat-value">{value}</div>
+      <div className="stat-footer">{footer}</div>
+    </div>
+  );
+}
+
+function WorkoutRow({ workout: w }) {
+  return (
+    <div className="workout-row">
+      <div className="workout-icon-wrap">{emoji(w.type)}</div>
+      <div style={{ flex: 1 }}>
+        <div className="workout-name">{w.type}</div>
+        <div className="workout-meta">{w.duration} min</div>
+      </div>
+      <div className="date-badge">{formatDate(w.date)}</div>
+      <div className="workout-right">
+        <div className="workout-cal">{w.calories}</div>
+        <div className="workout-cal-label">kcal</div>
+      </div>
+    </div>
+  );
+}
+
+// ── ADD WORKOUT ──
+function AddWorkout({ userId, onAdd }) {
+  const [form, setForm] = useState({ type: 'Running', duration: '', calories: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState(null);
+
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setLoading(true); setError(''); setResult(null);
+    try {
+      const saved = await apiFetch('POST', `/workouts/add?userId=${userId}`, {
+        type: form.type,
+        duration: parseInt(form.duration),
+        calories: parseInt(form.calories),
+      });
+      setResult(parseInt(form.calories));
+      setForm({ type: 'Running', duration: '', calories: '' });
+      onAdd(saved);
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <>
+      <div className="page-header">
+        <div>
+          <div className="page-title">Log Workout</div>
+          <div className="page-sub">Record your fitness activity</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <span className="card-title">Workout Details</span>
+        </div>
+        <div className="card-body">
+          {error && <div className="alert alert-error" style={{ marginBottom: 20 }}>⚠ {error}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className="form-grid form-grid-3">
+              <div className="field">
+                <label className="field-label">Type</label>
+                <select className="field-select" value={form.type} onChange={set('type')}>
+                  {WORKOUT_TYPES.map(t => <option key={t} value={t}>{emoji(t)} {t}</option>)}
+                </select>
+              </div>
+              <div className="field">
+                <label className="field-label">Duration (minutes)</label>
+                <input className="field-input" type="number" min="1" placeholder="30" value={form.duration} onChange={set('duration')} required />
+              </div>
+              <div className="field">
+                <label className="field-label">Calories Burned</label>
+                <input className="field-input" type="number" min="1" placeholder="250" value={form.calories} onChange={set('calories')} required />
+              </div>
+            </div>
+            <button className="btn btn-dark" type="submit" disabled={loading} style={{ width: 'auto', padding: '11px 28px' }}>
+              {loading ? 'Saving…' : '+ Log workout'}
+            </button>
+          </form>
+
+          {result !== null && (
+            <div className="calorie-panel">
+              <div className="calorie-panel-left">
+                <div className="calorie-panel-label">Calories burned in this workout</div>
+                <div className="calorie-panel-value">
+                  {result}<span className="calorie-panel-unit">kcal</span>
+                </div>
+                <div className="calorie-panel-sub">Great work — keep it up!</div>
+              </div>
+              <div className="calorie-panel-icon">🔥</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── HISTORY ──
+function History({ workouts }) {
+  const sorted = [...workouts].reverse();
+  return (
+    <>
+      <div className="page-header">
+        <div>
+          <div className="page-title">Workout History</div>
+          <div className="page-sub">{workouts.length} session{workouts.length !== 1 ? 's' : ''} logged</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <span className="card-title">All Workouts</span>
+          <span className="badge badge-gray">{workouts.length} total</span>
+        </div>
+        {sorted.length === 0 ? (
+          <div className="empty">
+            <div className="empty-emoji">📋</div>
+            <div className="empty-title">No history yet</div>
+            <div className="empty-sub">Your logged workouts will appear here</div>
+          </div>
+        ) : (
+          <div className="workout-list">
+            {sorted.map(w => <WorkoutRow key={w.id} workout={w} />)}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ── CALORIES ──
+function Calories({ workouts, totalCalories, todayCalories }) {
+  const byDay = {};
+  workouts.forEach(w => {
+    byDay[w.date] = (byDay[w.date] || 0) + w.calories;
+  });
+  const days = Object.entries(byDay).sort((a,b) => b[0].localeCompare(a[0])).slice(0, 7);
+  const max = Math.max(...days.map(d => d[1]), 1);
+  const avg = workouts.length > 0 ? Math.round(totalCalories / workouts.length) : 0;
+
+  return (
+    <>
+      <div className="page-header">
+        <div>
+          <div className="page-title">Calories</div>
+          <div className="page-sub">Track your energy expenditure</div>
+        </div>
+      </div>
+
+      <div className="stats-row">
+        <StatCard label="Total Burned" value={totalCalories.toLocaleString()} icon="🔥" bg="#fff7ed" footer="All sessions" />
+        <StatCard label="Burned Today" value={todayCalories.toLocaleString()} icon="📅" bg="#f0fdf4" footer="Today's sessions" />
+        <StatCard label="Per Workout" value={avg} icon="📊" bg="#f8fafc" footer="Average" />
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <span className="card-title">Daily Breakdown</span>
+          <span className="badge badge-gray">Last 7 days</span>
+        </div>
+        <div className="card-body">
+          {days.length === 0 ? (
+            <div className="empty" style={{ padding: '32px 0' }}>
+              <div className="empty-emoji">📊</div>
+              <div className="empty-title">No data yet</div>
+              <div className="empty-sub">Add workouts to see your daily breakdown</div>
+            </div>
+          ) : (
+            <div className="bar-chart">
+              {days.map(([date, cals]) => (
+                <div className="bar-row" key={date}>
+                  <div className="bar-label">{formatDate(date)}</div>
+                  <div className="bar-track">
+                    <div className="bar-fill" style={{ width: `${Math.round((cals / max) * 100)}%` }} />
+                  </div>
+                  <div className="bar-val">{cals} kcal</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {workouts.length > 0 && (
+        <div className="card">
+          <div className="card-header">
+            <span className="card-title">Workout Breakdown</span>
+          </div>
+          <div className="card-body">
+            <div className="bar-chart">
+              {Object.entries(workouts.reduce((acc, w) => {
+                acc[w.type] = (acc[w.type] || 0) + w.calories;
+                return acc;
+              }, {})).sort((a,b) => b[1]-a[1]).slice(0,6).map(([type, cals]) => {
+                const typeMax = Math.max(...Object.values(workouts.reduce((acc, w) => {
+                  acc[w.type] = (acc[w.type] || 0) + w.calories; return acc;
+                }, {})));
+                return (
+                  <div className="bar-row" key={type}>
+                    <div className="bar-label" style={{ display:'flex', alignItems:'center', gap:6, justifyContent:'flex-end' }}>
+                      <span>{emoji(type)}</span> {type}
+                    </div>
+                    <div className="bar-track">
+                      <div className="bar-fill" style={{ width: `${Math.round((cals/typeMax)*100)}%` }} />
+                    </div>
+                    <div className="bar-val">{cals} kcal</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ── MAIN APP ──
+function App() {
+  const [user, setUser] = useState(null);
+  const [page, setPage] = useState('auth');
+  const [nav, setNav] = useState('dashboard');
+  const [workouts, setWorkouts] = useState([]);
+  const [totalCalories, setTotalCalories] = useState(0);
+  const [todayCalories, setTodayCalories] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (msg, type = 'success') => {
+    const id = Date.now();
+    setToasts(t => [...t, { id, msg, type }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3000);
+  };
+
+  const loadData = useCallback(async (uid) => {
+    if (!uid) return;
+    setLoading(true);
+    try {
+      const [ws, total, today] = await Promise.all([
+        apiFetch('GET', `/workouts/history?userId=${uid}`),
+        apiFetch('GET', `/workouts/calories/total?userId=${uid}`),
+        apiFetch('GET', `/workouts/calories/today?userId=${uid}`),
+      ]);
+      setWorkouts(ws || []);
+      setTotalCalories(total || 0);
+      setTodayCalories(today || 0);
+    } catch (e) {}
+    setLoading(false);
+  }, []);
+
+  const handleLogin = (u) => {
+    setUser(u);
+    setPage('app');
+    setNav('dashboard');
+    loadData(u.id);
+  };
+
+  const handleLogout = () => {
+    setUser(null); setPage('auth'); setWorkouts([]);
+    setTotalCalories(0); setTodayCalories(0);
+  };
+
+  const handleAddWorkout = (saved) => {
+    addToast(`${saved.type} workout logged!`);
+    loadData(user.id);
+  };
+
+  if (page === 'auth') return <AuthPage onLogin={handleLogin} />;
+
+  const renderPage = () => {
+    if (loading) return <div className="loading"><div className="spinner" /> Loading…</div>;
+    switch (nav) {
+      case 'dashboard': return <Dashboard user={user} workouts={workouts} totalCalories={totalCalories} todayCalories={todayCalories} onNav={setNav} />;
+      case 'add':       return <AddWorkout userId={user.id} onAdd={handleAddWorkout} />;
+      case 'history':   return <History workouts={workouts} />;
+      case 'calories':  return <Calories workouts={workouts} totalCalories={totalCalories} todayCalories={todayCalories} />;
+      default:          return null;
+    }
+  };
+
+  return (
+    <div className="app-layout">
+      <Sidebar user={user} active={nav} onNav={setNav} onLogout={handleLogout} />
+      <div className="main-content">{renderPage()}</div>
+      <Toast toasts={toasts} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
